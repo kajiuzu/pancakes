@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>フライングパンケーキ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>フライングパンケーキ</h1>
+    <section class="hud">
+      <div>SCORE: <span id="score">0</span></div>
+      <div>HEIGHT: <span id="height">0</span></div>
+      <div>STABILITY: <span id="stability">100</span>%</div>
+      <div>MISSION: <span id="mission">右側に3連続で置こう</span></div>
+    </section>
+    <canvas id="gameCanvas" width="960" height="540"></canvas>
+    <p id="message">Spaceで開始 / ←→でお皿移動</p>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>

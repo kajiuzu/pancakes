@@ -1,0 +1,7 @@
+body { margin: 0; background: #fff7ec; font-family: sans-serif; }
+.container { width: min(980px, 96vw); margin: 10px auto; text-align: center; }
+h1 { margin: 8px 0; color: #6d3b11; }
+.hud { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; }
+.hud div { background: #ffe7c2; padding: 8px; border-radius: 8px; font-weight: 700; }
+#game-root canvas { width: 100% !important; height: auto !important; border: 3px solid #a96b33; border-radius: 10px; }
+#message { background: #fff0d1; border-radius: 8px; padding: 10px; color: #7a4215; margin-top: 8px; }
