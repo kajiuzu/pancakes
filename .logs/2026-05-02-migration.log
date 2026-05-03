@@ -1,0 +1,8 @@
+[feature] Next.js + Phaser migration
+- Created Next.js app structure (app/layout.js, app/page.js, app/globals.css)
+- Added Phaser client component (components/GameClient.js)
+- Updated PLAN.md tech stack to Next.js + Phaser
+
+[checks]
+- npm install => failed (403 registry access)
+[feature] add unity migration plan
