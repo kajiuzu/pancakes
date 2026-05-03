@@ -10,12 +10,12 @@
   <main class="container">
     <h1>フライングパンケーキ</h1>
     <section class="hud">
-      <div>SCORE: <span id="score">0</span></div>
-      <div>HEIGHT: <span id="height">0</span></div>
-      <div>STABILITY: <span id="stability">100</span>%</div>
-      <div>MISSION: <span id="mission">右側に3連続で置こう</span></div>
+      <div><img src="assets/ui/icon_score.svg" alt="score" class="hud-icon"> SCORE: <span id="score">0</span></div>
+      <div><img src="assets/ui/icon_life.svg" alt="height" class="hud-icon"> HEIGHT: <span id="height">0</span></div>
+      <div><img src="assets/ui/icon_warning.svg" alt="stability" class="hud-icon"> STABILITY: <span id="stability">100</span>%</div>
+      <div><img src="assets/ui/icon_mission.svg" alt="mission" class="hud-icon"> MISSION: <span id="mission">右側に3連続で置こう</span></div>
     </section>
-    <canvas id="gameCanvas" width="960" height="540"></canvas>
+    <canvas id="gameCanvas" width="960" height="540" aria-label="ゲーム画面"></canvas>
     <p id="message">Spaceで開始 / ←→でお皿移動</p>
   </main>
   <script src="game.js"></script>

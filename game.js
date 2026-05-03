@@ -8,6 +8,20 @@ const ui = {
   message: document.getElementById("message"),
 };
 
+const spritePaths = {
+  background: "assets/backgrounds/bg_kitchen_bright_1920x1080.svg",
+  player: "assets/player/player_plate.svg",
+  enemy: "assets/enemies/enemy_burnt_pancake.svg",
+};
+
+const sprites = Object.fromEntries(
+  Object.entries(spritePaths).map(([key, src]) => {
+    const img = new Image();
+    img.src = src;
+    return [key, img];
+  })
+);
+
 const state = {
   running: false,
   score: 0,
@@ -18,7 +32,6 @@ const state = {
   keys: { left: false, right: false },
   flying: null,
   last: 0,
-  missAllowed: 0,
   missionRightStreak: 0,
   missionDone: false,
   clearShown: false,
@@ -37,11 +50,10 @@ function newFlying() {
     x: 70,
     y: baseY - 190,
     vx: (220 + Math.random() * 80) * diff,
-    vy: - (280 + Math.random() * 60),
+    vy: -(280 + Math.random() * 60),
     w,
     h,
     thick,
-    settled: false,
   };
 }
 
@@ -132,28 +144,49 @@ function drawPancake(x, y, w, h, thick) {
   ctx.stroke();
 }
 
+function drawImageOrFallback(img, x, y, w, h, fallback) {
+  if (img.complete && img.naturalWidth > 0) {
+    ctx.drawImage(img, x, y, w, h);
+  } else if (fallback) {
+    fallback();
+  }
+}
+
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  grad.addColorStop(0, "#fffdf7");
-  grad.addColorStop(1, "#ffe9c8");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = "#d0d0d0";
-  ctx.fillRect(25, baseY - 145, 35, 145);
-  ctx.fillStyle = "#333";
-  ctx.fillText("Chef", 20, baseY - 155);
+  drawImageOrFallback(sprites.background, 0, 0, canvas.width, canvas.height, () => {
+    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, "#fffdf7");
+    grad.addColorStop(1, "#ffe9c8");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  });
 
-  ctx.fillStyle = "#e6eef9";
-  ctx.beginPath();
-  ctx.ellipse(state.playerX, baseY, plateW / 2, 16, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = "#9fb3ce";
-  ctx.stroke();
+  drawImageOrFallback(sprites.player, state.playerX - plateW / 2, baseY - 16, plateW, 32, () => {
+    ctx.fillStyle = "#e6eef9";
+    ctx.beginPath();
+    ctx.ellipse(state.playerX, baseY, plateW / 2, 16, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#9fb3ce";
+    ctx.stroke();
+  });
 
   for (const s of state.stack) drawPancake(s.x, s.y, s.w, s.h, s.thick);
-  if (state.flying) drawPancake(state.flying.x, state.flying.y, state.flying.w, state.flying.h, state.flying.thick);
+  if (state.flying) {
+    if (state.flying.thick) {
+      drawImageOrFallback(
+        sprites.enemy,
+        state.flying.x - state.flying.w / 2,
+        state.flying.y - state.flying.h / 2,
+        state.flying.w,
+        state.flying.h,
+        () => drawPancake(state.flying.x, state.flying.y, state.flying.w, state.flying.h, true)
+      );
+    } else {
+      drawPancake(state.flying.x, state.flying.y, state.flying.w, state.flying.h, false);
+    }
+  }
 }
 
 function loop(ts) {
