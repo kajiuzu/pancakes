@@ -1,1 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ffb347"/><text x="32" y="39" font-size="24" text-anchor="middle" fill="#7a4215" font-family="Arial">Åö</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <path d="M64 108 L24 60 A20 20 0 0 1 56 34 L64 42 L72 34 A20 20 0 0 1 104 60 Z" fill="#FF5E83" stroke="#B93A57" stroke-width="6"/>
+</svg>

@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ffb347"/><text x="32" y="39" font-size="24" text-anchor="middle" fill="#7a4215" font-family="Arial">Åö</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <ellipse cx="64" cy="70" rx="46" ry="26" fill="#EAB662" stroke="#825028" stroke-width="6"/>
+  <ellipse cx="64" cy="68" rx="34" ry="18" fill="#F8D7A6"/>
+  <rect x="56" y="32" width="16" height="14" rx="2" fill="#FFE97A" stroke="#B09034" stroke-width="2"/>
+</svg>
