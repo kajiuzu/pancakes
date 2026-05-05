@@ -39,20 +39,30 @@ const state = {
 
 const baseY = canvas.height - 75;
 const plateW = 170;
-const g = 900;
+const chefX = canvas.width / 2;
+const chefY = 120;
 
 function newFlying() {
   const thick = Math.random() < Math.min(0.7, 0.25 + state.stack.length * 0.03);
-  const w = thick ? 120 : 100;
-  const h = thick ? 26 : 18;
-  const diff = Math.min(1.8, 1 + state.stack.length * 0.05);
+  const endScale = thick ? 1.0 : 0.88;
+  const diff = Math.min(1.7, 1 + state.stack.length * 0.04);
+  const targetX = state.playerX + (Math.random() * 120 - 60);
+  const apexLift = 130 + Math.random() * 60;
   return {
-    x: 70,
-    y: baseY - 190,
-    vx: (220 + Math.random() * 80) * diff,
-    vy: -(280 + Math.random() * 60),
-    w,
-    h,
+    startX: chefX + (Math.random() * 90 - 45),
+    startY: chefY + (Math.random() * 20 - 10),
+    targetX,
+    targetY: baseY - 30,
+    progress: 0,
+    speed: 0.5 * diff,
+    arc: apexLift,
+    baseW: 112,
+    baseH: 24,
+    endScale,
+    x: chefX,
+    y: chefY,
+    w: 42,
+    h: 10,
     thick,
   };
 }
@@ -80,21 +90,30 @@ function sync() {
 
 function update(dt) {
   if (!state.running) return;
+
   if (state.keys.left) state.playerX -= state.speed * dt;
   if (state.keys.right) state.playerX += state.speed * dt;
   state.playerX = Math.max(plateW / 2, Math.min(canvas.width - plateW / 2, state.playerX));
 
   const p = state.flying;
-  p.vy += g * dt;
-  p.x += p.vx * dt;
-  p.y += p.vy * dt;
+  p.progress = Math.min(1.25, p.progress + p.speed * dt);
+  const t = p.progress;
+  const curve = 4 * t * (1 - t);
+
+  p.x = p.startX + (p.targetX - p.startX) * t;
+  p.y = p.startY + (p.targetY - p.startY) * t - p.arc * curve;
+
+  const scale = 0.36 + Math.min(1, t) * (p.endScale - 0.36);
+  p.w = p.baseW * scale;
+  p.h = p.baseH * scale;
 
   const topY = baseY - state.stack.reduce((a, s) => a + s.h, 0);
   const supportCenter = state.stack.length === 0 ? state.playerX : state.stack[state.stack.length - 1].x;
 
-  if (p.vy > 0 && p.y + p.h / 2 >= topY) {
+  if (p.progress >= 1 && p.y + p.h / 2 >= topY) {
     const offset = p.x - supportCenter;
     const allowed = Math.max(22, 56 - state.stack.length * 1.4);
+
     if (Math.abs(offset) > allowed) {
       endGame("崩れてしまった…");
       return;
@@ -102,6 +121,7 @@ function update(dt) {
 
     p.y = topY - p.h / 2;
     state.stack.push({ x: p.x, y: p.y, w: p.w, h: p.h, thick: p.thick });
+
     const baseScore = p.thick ? 150 : 100;
     state.score += (state.missionDone ? 2 : 1) * baseScore;
     state.stability -= Math.abs(offset) * (p.thick ? 0.52 : 0.36);
@@ -119,10 +139,11 @@ function update(dt) {
       endGame("バランス崩壊…");
       return;
     }
+
     state.flying = newFlying();
   }
 
-  if (p.y > canvas.height + 40 || p.x > canvas.width + 80) {
+  if (p.progress > 1.2 || p.y > canvas.height + 60) {
     endGame("キャッチ失敗！パンケーキを落とした");
     return;
   }
@@ -173,6 +194,7 @@ function render() {
   });
 
   for (const s of state.stack) drawPancake(s.x, s.y, s.w, s.h, s.thick);
+
   if (state.flying) {
     if (state.flying.thick) {
       drawImageOrFallback(
@@ -206,6 +228,7 @@ document.addEventListener("keydown", (e) => {
     if (!state.running) reset();
   }
 });
+
 document.addEventListener("keyup", (e) => {
   if (["ArrowLeft", "a", "A"].includes(e.key)) state.keys.left = false;
   if (["ArrowRight", "d", "D"].includes(e.key)) state.keys.right = false;
